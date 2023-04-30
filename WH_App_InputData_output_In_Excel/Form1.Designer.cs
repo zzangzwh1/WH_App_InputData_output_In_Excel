@@ -42,6 +42,7 @@ namespace WH_App_InputData_output_In_Excel
             this.label5 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this._caldenr = new System.Windows.Forms.DateTimePicker();
+            this._createExcel = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -62,7 +63,7 @@ namespace WH_App_InputData_output_In_Excel
             this._idText.Name = "_idText";
             this._idText.Size = new System.Drawing.Size(237, 36);
             this._idText.TabIndex = 1;
-          
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -160,13 +161,23 @@ namespace WH_App_InputData_output_In_Excel
             this._caldenr.Name = "_caldenr";
             this._caldenr.Size = new System.Drawing.Size(237, 22);
             this._caldenr.TabIndex = 13;
-           
+            // 
+            // _createExcel
+            // 
+            this._createExcel.Location = new System.Drawing.Point(477, 504);
+            this._createExcel.Name = "_createExcel";
+            this._createExcel.Size = new System.Drawing.Size(126, 41);
+            this._createExcel.TabIndex = 14;
+            this._createExcel.Text = "Create Excel";
+            this._createExcel.UseVisualStyleBackColor = true;
+            
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(834, 581);
+            this.Controls.Add(this._createExcel);
             this.Controls.Add(this._caldenr);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.panel1);
@@ -204,6 +215,7 @@ namespace WH_App_InputData_output_In_Excel
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DateTimePicker _caldenr;
+        private System.Windows.Forms.Button _createExcel;
     }
 }
 

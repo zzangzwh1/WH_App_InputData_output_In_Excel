@@ -9,31 +9,83 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
-
+using Microsoft.Office.Interop.Excel;
+using DataTable = System.Data.DataTable;
+using System.Runtime.InteropServices;
 
 namespace WH_App_InputData_output_In_Excel
 {
     public partial class Form1 : Form
     {
-        public string connectionString = "Data Source=(localdb)\\Local;Initial Catalog=EmployeeManagement;Integrated Security=True";
-        DataTable dt = new DataTable();
+        private string connectionString = "Data Source=(localdb)\\Local;Initial Catalog=EmployeeManagement;Integrated Security=True";
+        private DataTable dt = new DataTable();
         public Form1()
         {
             InitializeComponent();
            
             this.Text = $"Insert into DB and Get Result in Excel";
 
+            // event added
             _idText.TextChanged += _idText_TextChanged;
             _salary.TextChanged += _salary_TextChanged;
             _nameText.TextChanged += _nameText_TextChanged;
             _addBtn.Click += _addBtn_Click;
             _show.Click += _show_Click;
+            _createExcel.Click += _createExcel_Click;
            
             
 
         }
 
-      
+        private void _createExcel_Click(object sender, EventArgs e)
+        {
+            string query = "SELECT * FROM Employee";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            Microsoft.Office.Interop.Excel.Application app = new Microsoft.Office.Interop.Excel.Application();
+                            Workbook wBook = app.Workbooks.Add();                            
+                            Worksheet wSheet = wBook.Worksheets.Add();
+                            // Add column headers to worksheet
+                            wSheet.Cells[1, 1] = "ID";
+                            wSheet.Cells[1, 2] = "Name";
+                            wSheet.Cells[1, 3] = "Start Date";
+                            wSheet.Cells[1, 4] = "Salary";
+                            int row = 2;
+                            while (reader.Read())
+                            {
+                                wSheet.Cells[row, 1] = reader["ID"].ToString();
+                                wSheet.Cells[row, 2] = reader["name"].ToString();
+                                wSheet.Cells[row, 3] = reader["startDate"].ToString();
+                                wSheet.Cells[row, 4] = reader["salary"].ToString();
+                                row++;
+                            }
+                            wBook.SaveAs("Downloads");
+                            reader.Close();
+
+                            app.Quit();
+                            Marshal.FinalReleaseComObject(app);
+
+
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine($"Error Occured while create Excel :{ex.Message}");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
 
         private void _show_Click(object sender, EventArgs e)
         {
@@ -95,31 +147,41 @@ namespace WH_App_InputData_output_In_Excel
             // Open a connection to the database
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
-
-                // Create a command object
-                using (SqlCommand command = new SqlCommand(query, connection))
+                try
                 {
-                    // Set the parameter values
+                    connection.Open();
 
-                    command.Parameters.AddWithValue("@ID", _idText.Text);
-                    command.Parameters.AddWithValue("@name", _nameText.Text);
-                    command.Parameters.AddWithValue("@startDate", _caldenr.Value);
-                    command.Parameters.AddWithValue("@salary", _salary.Text);
+                    // Create a command object
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Set the parameter values
 
-                    int rowAResult = command.ExecuteNonQuery();
+                        command.Parameters.AddWithValue("@ID", _idText.Text);
+                        command.Parameters.AddWithValue("@name", _nameText.Text);
+                        command.Parameters.AddWithValue("@startDate", _caldenr.Value);
+                        command.Parameters.AddWithValue("@salary", _salary.Text);
 
-                    Console.WriteLine($"Affected Line : {rowAResult}");
+                        int rowAResult = command.ExecuteNonQuery();
+
+                        Console.WriteLine($"Affected Line : {rowAResult}");
 
 
 
+                    }
                 }
+                catch(Exception ex) 
+                {
+                    Console.WriteLine($"Error occured : {ex.Message}");
+                }
+                finally
+                {
+                    connection.Close();
+                }
+                
             }
 
         }
 
-
-
-
+     
     }
 }
