@@ -12,6 +12,8 @@ using System.Text.RegularExpressions;
 using Microsoft.Office.Interop.Excel;
 using DataTable = System.Data.DataTable;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.IO;
 
 namespace WH_App_InputData_output_In_Excel
 {
@@ -66,13 +68,12 @@ namespace WH_App_InputData_output_In_Excel
                                 wSheet.Cells[row, 4] = reader["salary"].ToString();
                                 row++;
                             }
-                            wBook.SaveAs("Downloads");
+                            string fileName = "Downloads.xlsx";
+                            string fullPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", fileName);
+                            wBook.SaveAs(fullPath);
                             reader.Close();
-
-                            app.Quit();
-                            Marshal.FinalReleaseComObject(app);
-
-
+                            app.Visible = true;
+                            app.WindowState = XlWindowState.xlMaximized;
                         }
                     }
                 }
